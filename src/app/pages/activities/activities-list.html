@@ -1,0 +1,19 @@
+<app-header></app-header>
+<main class="wrap">
+  <header class="toolbar">
+    <h2>Actividades</h2>
+    <a routerLink="/app/activities/new" class="btn">Nueva actividad</a>
+  </header>
+  <table>
+    <thead><tr><th>Fecha</th><th>Título</th><th>Tipo</th><th>Estatus</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let a of items">
+        <td>{{a.date}} {{a.time || ''}}</td>
+        <td>{{a.title}}</td>
+        <td>{{a.type}}</td>
+        <td><span class="badge" [class.ok]="a.status==='completada'">{{a.status}}</span></td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+<app-footer></app-footer>

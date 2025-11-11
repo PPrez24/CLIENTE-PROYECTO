@@ -1,0 +1,15 @@
+<app-header></app-header>
+<main class="auth">
+  <h2>Iniciar sesión</h2>
+  <form (ngSubmit)="login()" #f="ngForm">
+    <label>Email
+      <input type="email" name="email" [(ngModel)]="email" required />
+    </label>
+    <label>Contraseña
+      <input type="password" name="password" [(ngModel)]="password" required />
+    </label>
+    <button class="btn" type="submit" [disabled]="!f.form.valid">Entrar (mock)</button>
+  </form>
+  <p>¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a></p>
+</main>
+<app-footer></app-footer>

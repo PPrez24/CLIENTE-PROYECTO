@@ -1,0 +1,12 @@
+<app-header></app-header>
+<main class="wrap">
+  <h2>Plantillas</h2>
+  <ul class="cards">
+    <li *ngFor="let t of items" class="card">
+      <h3>{{t.name}}</h3>
+      <p>{{t.fields}} campos</p>
+      <button class="btn" type="button">Usar (mock)</button>
+    </li>
+  </ul>
+</main>
+<app-footer></app-footer>

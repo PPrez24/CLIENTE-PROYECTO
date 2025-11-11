@@ -1,0 +1,9 @@
+<h1>Lista de peliculas!</h1>
+
+@if (!movies.length) {
+  <p>No hay peliculas disponibles</p>
+}
+
+@for (item of movies; track item) {
+  <app-movie-item [movie]="item" (onSelected)="handleMovieSelected($event)"></app-movie-item>
+}
