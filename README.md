@@ -1,59 +1,71 @@
-# AngularProyectoPrueba
+# Agenda ITESO
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.1.
+Proyecto desarrollado en Angular como parte del curso Desarrollo en el Cliente.  
+La aplicación tiene como objetivo ofrecer una agenda digital para estudiantes del ITESO, donde puedan organizar clases, tareas y actividades en un mismo lugar.
 
-## Development server
+Este repositorio incluye las vistas, rutas, componentes, servicios y directivas base necesarias para la navegación y diseño de la aplicación.  
+En esta versión no existe conexión con API ni base de datos; los datos mostrados son estáticos y sirven únicamente para propósitos de demostración y diseño de interfaz.
 
-To start a local development server, run:
+## Cómo ejecutar el proyecto
 
-```bash
-ng serve
+Asegúrate de tener instalada una versión reciente de Node.js (>= 20.19 o >= 22.12) y Angular CLI.  
+Luego ejecuta los siguientes comandos en la terminal:
+
+```
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Una vez iniciado, abre tu navegador en:  
+http://localhost:4200  
+La aplicación se recargará automáticamente al guardar cambios en los archivos fuente.
 
-## Code scaffolding
+## Estructura general del proyecto
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+El proyecto está organizado en distintos módulos que permiten mantener el código limpio y modular:
 
-```bash
-ng generate component component-name
-```
+| Carpeta / Módulo | Descripción |
+|------------------|-------------|
+| /layout | Contiene el encabezado y pie de página de la aplicación. |
+| /pages | Páginas principales como Inicio, Login, Registro, Dashboard, Actividades, Plantillas y Notificaciones. |
+| /shared | Servicios, directivas y tipos compartidos entre componentes. |
+| /ui | Componentes visuales reutilizables (como el sistema de notificaciones). |
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Cada vista utiliza ruteo interno para navegar entre secciones siguiendo estas rutas:
 
-```bash
-ng generate --help
-```
+- `/` → Página de inicio (Landing)
+- `/auth/login` → Inicio de sesión
+- `/auth/register` → Registro de usuario
+- `/app/dashboard` → Panel principal
+- `/app/activities` → Listado de actividades
+- `/app/activities/new` → Formulario de nueva actividad
+- `/app/templates` → Plantillas de actividades
+- `/app/notifications` → Ejemplos de mensajes y notificaciones
 
-## Building
+## Tecnologías utilizadas
 
-To build the project run:
+- Angular 20 con TypeScript
+- Standalone Components
+- Angular Router
+- CSS responsivo / estilos personalizados
+- Servicios simulados (mock data)
+- LocalStorage para manejo básico de sesión
 
-```bash
-ng build
-```
+## Scripts útiles
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+| Comando | Descripción |
+|----------|-------------|
+| ng serve | Inicia el servidor de desarrollo. |
+| ng build | Compila el proyecto para producción (carpeta /dist). |
+| ng test | Ejecuta pruebas unitarias. |
+| ng generate component <nombre> | Crea un nuevo componente Angular. |
 
-## Running unit tests
+## Notas
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Este proyecto no incluye conexión a backend ni API.  
+Toda la información mostrada (actividades, plantillas, mensajes, etc.) está hardcodeada únicamente para demostrar el diseño, navegación y arquitectura del lado del cliente.
 
-```bash
-ng test
-```
+## Sobre el proyecto
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Agenda ITESO es una propuesta de agenda universitaria pensada para organizar actividades académicas, deportivas y personales dentro del entorno del ITESO.  
+El proyecto forma parte de una entrega académica y se centra en el diseño, estructura y navegación del cliente.
