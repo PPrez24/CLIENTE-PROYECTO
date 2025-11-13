@@ -12,7 +12,8 @@ type ActivityType = 'Académico'|'Deportivo'|'Cultural'|'Voluntariado';
   selector: 'app-activity-form',
   standalone: true,
   imports: [CommonModule, FormsModule, Header, Footer, ToastComponent],
-  templateUrl: './activity-form.html'
+  templateUrl: './activity-form.html',
+  styleUrls: ['./activity-form.scss']
 })
 export class ActivityForm {
   // ✅ agrega las propiedades que usa tu template
@@ -36,5 +37,16 @@ export class ActivityForm {
 
   save() {
     this.toast.show('Se creó correctamente');
+  }
+
+  resetForm() {
+    this.model = {
+      title: '',
+      date: '',
+      time: '',
+      location: '',
+      type: 'Académico',
+      status: 'pendiente'
+    };
   }
 }

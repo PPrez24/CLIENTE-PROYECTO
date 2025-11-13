@@ -1,19 +1,95 @@
 <app-header></app-header>
-<main class="wrap">
-  <header class="toolbar">
-    <h2>Actividades</h2>
-    <a routerLink="/app/activities/new" class="btn">Nueva actividad</a>
-  </header>
-  <table>
-    <thead><tr><th>Fecha</th><th>Título</th><th>Tipo</th><th>Estatus</th></tr></thead>
-    <tbody>
-      <tr *ngFor="let a of items">
-        <td>{{a.date}} {{a.time || ''}}</td>
-        <td>{{a.title}}</td>
-        <td>{{a.type}}</td>
-        <td><span class="badge" [class.ok]="a.status==='completada'">{{a.status}}</span></td>
-      </tr>
-    </tbody>
-  </table>
+<main class="activities">
+  <section class="welcome">
+    <h1>Calendario de Actividades</h1>
+    <p>Organiza y visualiza tus actividades en un calendario interactivo</p>
+  </section>
+
+  <section class="calendar-controls">
+    <div class="view-toggle">
+      <button class="view-btn" [class.active]="currentView === 'month'" (click)="setView('month')">Mes</button>
+      <button class="view-btn" [class.active]="currentView === 'week'" (click)="setView('week')">Semana</button>
+      <button class="view-btn" [class.active]="currentView === 'list'" (click)="setView('list')">Lista</button>
+    </div>
+    <div class="month-navigation">
+      <button class="nav-btn" (click)="previousMonth()">←</button>
+      <h2 class="current-month">{{ currentMonth | date:'MMMM yyyy' }}</h2>
+      <button class="nav-btn" (click)="nextMonth()">→</button>
+    </div>
+    <a routerLink="/app/activities/new" class="action-btn">
+      <span>Nueva Actividad</span>
+    </a>
+  </section>
+
+  <!-- Vista de Mes -->
+  <section class="calendar-view" *ngIf="currentView === 'month'">
+    <div class="calendar-grid">
+      <div class="day-header" *ngFor="let day of weekDays">
+        {{ day }}
+      </div>
+      <div class="calendar-day"
+           *ngFor="let day of calendarDays"
+           [class.other-month]="day.getMonth() !== currentMonth.getMonth()"
+           [class.today]="isToday(day)">
+        <div class="day-number">{{ day.getDate() }}</div>
+        <div class="day-activities">
+          <div class="activity-dot"
+               *ngFor="let activity of getActivitiesForDay(day)"
+               [class]="activity.type.toLowerCase()"
+               [title]="activity.title">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vista de Semana -->
+  <section class="week-view" *ngIf="currentView === 'week'">
+    <div class="week-header">
+      <div class="time-column">Hora</div>
+      <div class="day-column" *ngFor="let day of weekDays">
+        <div class="day-name">{{ day }}</div>
+        <div class="day-date">{{ getWeekDayDate(day) | date:'d' }}</div>
+      </div>
+    </div>
+    <div class="week-grid">
+      <div class="time-slot" *ngFor="let hour of hours">
+        <div class="time-label">{{ hour }}:00</div>
+        <div class="day-slot" *ngFor="let day of weekDays">
+          <div class="activity-slot"
+               *ngFor="let activity of getActivitiesForTimeSlot(day, hour)"
+               [class]="activity.type.toLowerCase()">
+            <div class="activity-title">{{ activity.title }}</div>
+            <div class="activity-time">{{ activity.time }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vista de Lista -->
+  <section class="list-view" *ngIf="currentView === 'list'">
+    <div class="activities-list">
+      <div class="activity-item" *ngFor="let activity of sortedActivities">
+        <div class="activity-date">
+          <div class="date">{{ activity.date | date:'d' }}</div>
+          <div class="month">{{ activity.date | date:'MMM' }}</div>
+        </div>
+        <div class="activity-content">
+          <h3>{{ activity.title }}</h3>
+          <div class="activity-meta">
+            <span class="type-badge" [class]="activity.type.toLowerCase()">{{ activity.type }}</span>
+            <span class="time" *ngIf="activity.time">{{ activity.time }}</span>
+            <span class="location" *ngIf="activity.location">📍 {{ activity.location }}</span>
+          </div>
+        </div>
+        <div class="activity-status">
+          <span class="status" [class.pending]="activity.status === 'pendiente'" [class.completed]="activity.status === 'completada'">
+            {{ activity.status === 'pendiente' ? 'Pendiente' : 'Completada' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 <app-footer></app-footer>

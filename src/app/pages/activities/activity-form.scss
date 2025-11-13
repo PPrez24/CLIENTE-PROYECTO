@@ -1,1 +1,177 @@
-.wrap{max-width:640px;margin:1rem auto} label{display:block;margin:.5rem 0} input,select{width:100%;padding:.5rem;border:1px solid #ddd;border-radius:.375rem} .row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@import '../../../styles/_variables.scss';
+
+.activity-form {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $azul-claro 0%, $azul-medio 30%, $azul-oscuro 100%);
+  padding: 6rem 2rem 2rem 2rem;
+  position: relative;
+}
+
+.activity-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/Logo_del_ITESO.svg') top center / cover no-repeat;
+  opacity: 0.1;
+  filter: blur(15px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.form-container {
+  max-width: 640px;
+  margin: 2rem auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.form-title {
+  color: #ffffff;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+label {
+  display: block;
+  color: #e8eaf6;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: $azul-claro;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba($azul-claro, 0.2);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: $azul-claro;
+  padding: 1.2rem 3rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: 1px solid $azul-claro;
+  transition: all 0.3s ease;
+  margin: 0 0.5rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: rgba($azul-claro, 0.2);
+  color: $blanco;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px 0 rgba($azul-medio, 0.4);
+}
+
+.btn-primary {
+  background: rgba($azul-claro, 0.2);
+  color: $blanco;
+}
+
+.btn-secondary {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #e8eaf6;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: $blanco;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.05);
+  color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cccccc;
+  transform: none;
+  box-shadow: none;
+}
+
+input[type="date"], input[type="time"] {
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(2);
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,18 +1,41 @@
 <app-header></app-header>
-<main class="wrap">
-  <h2>Notificaciones (Ejemplos)</h2>
-  <button class="btn" (click)="success()">Mostrar toast de éxito</button>
+<main class="notifications">
+  <h2>Notificaciones</h2>
+  <div class="intro">
+    <p>Prueba diferentes tipos de notificaciones para ver cómo se muestran en la aplicación.</p>
+  </div>
 
-  <section class="mt">
-    <h3>Confirmación</h3>
-    <div class="dialog">
-      <p>¿Deseas eliminar este registro?</p>
+  <section class="notification-types">
+    <h3>Tipos de Notificaciones</h3>
+    <div class="buttons-grid">
+      <button class="btn success-btn" (click)="showSuccess()">Éxito</button>
+      <button class="btn error-btn" (click)="showError()">Error</button>
+      <button class="btn warning-btn" (click)="showWarning()">Advertencia</button>
+      <button class="btn info-btn" (click)="showInfo()">Información</button>
+    </div>
+  </section>
+
+  <section class="confirmation-section">
+    <h3>Confirmación de Acción</h3>
+    <div class="confirmation-card">
+      <p>¿Estás seguro de que quieres eliminar esta actividad? Esta acción no se puede deshacer.</p>
       <div class="actions">
-        <button class="btn ghost">No</button>
-        <button class="btn">Sí</button>
+        <button class="btn ghost" (click)="openDeleteDialog()">Eliminar</button>
       </div>
     </div>
   </section>
-  <app-toast></app-toast>
+
+  <!-- Custom Delete Dialog -->
+  <div *ngIf="showDialog" class="dialog-overlay" (click)="cancelDelete()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <h3>Confirmar Eliminación</h3>
+      <p>¿Estás completamente seguro de que deseas eliminar esta actividad? Esta acción es irreversible y perderás todos los datos asociados.</p>
+      <div class="dialog-actions">
+        <button class="btn cancel-btn" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn delete-btn" (click)="confirmDelete()">Eliminar</button>
+      </div>
+    </div>
+  </div>
 </main>
+<app-toast></app-toast>
 <app-footer></app-footer>

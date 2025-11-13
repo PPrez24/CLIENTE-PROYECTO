@@ -6,10 +6,13 @@
       <input type="email" name="email" [(ngModel)]="email" required />
     </label>
     <label>Contraseña
-      <input type="password" name="password" [(ngModel)]="password" required />
+      <div class="password-container">
+        <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" required />
+        <button type="button" (click)="togglePassword()" class="toggle-password">{{ showPassword ? '🙈' : '👁️' }}</button>
+      </div>
     </label>
     <button class="btn" type="submit" [disabled]="!f.form.valid">Entrar (mock)</button>
   </form>
-  <p>¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a></p>
+  <p class="register-section">¿No tienes cuenta? <a routerLink="/auth/register" class="register-btn">Regístrate</a></p>
 </main>
 <app-footer></app-footer>

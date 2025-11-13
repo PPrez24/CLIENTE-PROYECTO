@@ -18,6 +18,7 @@ import { Footer } from '../../layout/footer/footer';
 export class Login {
   email = '';
   password = '';
+  showPassword = false;
 
   constructor(
     private loginService: LoginService,
@@ -31,5 +32,9 @@ export class Login {
       this.tokenService.setToken(response.token);
       this.router.navigateByUrl('/app/dashboard');
     });
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 }

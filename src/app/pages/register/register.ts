@@ -13,5 +13,9 @@ import { HighlightDirective } from '../../shared/directives/highlight';
   styleUrl: './register.scss'
 })
 export class Register {
-  name=''; email=''; password='';
+  name=''; email=''; password=''; showPassword = false;
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
 }

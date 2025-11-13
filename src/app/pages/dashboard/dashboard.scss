@@ -1,1 +1,217 @@
-.grid{display:grid;gap:1rem;grid-template-columns: repeat(auto-fit,minmax(260px,1fr));padding:1rem}.card{border:1px solid #e5e7eb;border-radius:.75rem;padding:1rem}
+@import '../../../styles/_variables.scss';
+
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $azul-claro 0%, $azul-medio 30%, $azul-oscuro 100%);
+  padding: 6rem 2rem 2rem 2rem;
+  position: relative;
+}
+
+.dashboard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/Logo_del_ITESO.svg') top center / cover no-repeat;
+  opacity: 0.1;
+  filter: blur(15px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.welcome {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.welcome h1 {
+  color: #ffffff;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.welcome p {
+  color: #e8eaf6;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.quick-actions {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: $azul-claro;
+  padding: 0.6rem 1.5rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid $azul-claro;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.action-btn:hover {
+  background: rgba($azul-claro, 0.2);
+  color: $blanco;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px 0 rgba($azul-claro, 0.3);
+}
+
+.action-btn .icon {
+  font-size: 1.5rem;
+}
+
+.activities-overview {
+  position: relative;
+  z-index: 1;
+}
+
+.activities-overview h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.activity-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: all 0.3s ease;
+}
+
+.activity-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.activity-header h3 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.type-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
+.type-badge.académico {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: #ffffff;
+}
+
+.type-badge.deportivo {
+  background: linear-gradient(45deg, #0056b3, #001f3f);
+  color: #ffffff;
+}
+
+.type-badge.cultural {
+  background: linear-gradient(45deg, #17a2b8, #0056b3);
+  color: #ffffff;
+}
+
+.type-badge.voluntariado {
+  background: linear-gradient(45deg, #001f3f, #007bff);
+  color: #ffffff;
+}
+
+.activity-details p {
+  color: #e8eaf6;
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.activity-footer {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status.pending {
+  background: linear-gradient(45deg, #17a2b8, #0056b3);
+  color: #ffffff;
+}
+
+.status.completed {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: #ffffff;
+}
+
+.no-activities {
+  text-align: center;
+  color: #e8eaf6;
+  font-style: italic;
+  margin: 2rem 0;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .welcome h1 {
+    font-size: 2.5rem;
+  }
+
+  .activities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .type-badge {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}

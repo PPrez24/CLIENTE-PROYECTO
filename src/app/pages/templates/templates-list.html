@@ -1,6 +1,9 @@
 <app-header></app-header>
-<main class="wrap">
+<main class="templates">
   <h2>Plantillas</h2>
+  <div class="intro">
+    <p>Descubre una variedad de plantillas predefinidas para acelerar la creación de tus actividades. Cada plantilla incluye campos personalizables que puedes adaptar a tus necesidades específicas.</p>
+  </div>
   <ul class="cards">
     <li *ngFor="let t of items" class="card">
       <h3>{{t.name}}</h3>
@@ -8,5 +11,10 @@
       <button class="btn" type="button">Usar (mock)</button>
     </li>
   </ul>
+  <section class="comunidad">
+    <h3>Comunidad</h3>
+    <p>Próximamente...</p>
+    <p>Comparte tus propias plantillas con la comunidad y descubre nuevas ideas de otros usuarios.</p>
+  </section>
 </main>
 <app-footer></app-footer>

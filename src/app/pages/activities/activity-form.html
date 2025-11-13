@@ -1,24 +1,43 @@
 <app-header></app-header>
-<main class="wrap">
-  <h2>Nueva actividad</h2>
-  <form (ngSubmit)="save()" #f="ngForm">
-    <label>Título <input name="title" [(ngModel)]="model.title" required/></label>
-    <label>Tipo 
-      <select name="type" [(ngModel)]="model.type">
-        <option>Académico</option><option>Deportivo</option><option>Cultural</option><option>Voluntariado</option>
-      </select>
-    </label>
-    <div class="row">
-      <label>Fecha <input type="date" name="date" [(ngModel)]="model.date"/></label>
-      <label>Hora <input type="time" name="time" [(ngModel)]="model.time"/></label>
-    </div>
-    <label>Ubicación <input name="location" [(ngModel)]="model.location"/></label>
-    <label>Estatus 
-      <select name="status" [(ngModel)]="model.status">
-        <option>pendiente</option><option>completada</option>
-      </select>
-    </label>
-    <button class="btn" type="submit" [disabled]="!f.form.valid">Guardar (mock)</button>
-  </form>
+<main class="activity-form">
+  <div class="form-container">
+    <h2 class="form-title">Nueva actividad</h2>
+    <form (ngSubmit)="save()" #f="ngForm">
+      <div class="form-group">
+        <label>Título</label>
+        <input name="title" [(ngModel)]="model.title" required/>
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select name="type" [(ngModel)]="model.type">
+          <option>Académico</option><option>Deportivo</option><option>Cultural</option><option>Voluntariado</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label>Fecha</label>
+          <input type="date" name="date" [(ngModel)]="model.date" required/>
+        </div>
+        <div class="form-group">
+          <label>Hora</label>
+          <input type="time" name="time" [(ngModel)]="model.time"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ubicación</label>
+        <input name="location" [(ngModel)]="model.location" required/>
+      </div>
+      <div class="form-group">
+        <label>Estatus</label>
+        <select name="status" [(ngModel)]="model.status">
+          <option>pendiente</option><option>completada</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" [disabled]="!f.form.valid">Guardar</button>
+        <button class="btn btn-secondary" type="button" (click)="resetForm()">Cancelar</button>
+      </div>
+    </form>
+  </div>
 </main>
 <app-footer></app-footer>

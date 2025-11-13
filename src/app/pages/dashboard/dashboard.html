@@ -1,15 +1,38 @@
 <app-header></app-header>
-<section class="grid">
-  <div class="card">
-    <h3>Resumen</h3>
-    <p>Actividades pendientes: {{pendingCount()}}</p>
-    <a routerLink="/app/activities" class="btn">Ver actividades</a>
-  </div>
-  <div class="card">
-    <h3>Próximas</h3>
-    <ul>
-      <li *ngFor="let a of items | slice:0:3">{{a.date}} · {{a.title}} ({{a.type}})</li>
-    </ul>
-  </div>
-</section>
+<main class="dashboard">
+  <section class="welcome">
+    <h1>¡Bienvenido a Agenda ITESO!</h1>
+    <p>Organiza tus actividades académicas, deportivas y más. Tienes {{pendingCount()}} actividades pendientes.</p>
+  </section>
+
+  <section class="quick-actions">
+    <a routerLink="/app/activities" class="action-btn">
+      <span class="icon">📅</span>
+      <span>Ver Todas las Actividades</span>
+    </a>
+  </section>
+
+  <section class="activities-overview">
+    <h2>Todas tus Actividades</h2>
+    <div class="activities-grid">
+      <div class="activity-card" *ngFor="let a of items">
+        <div class="activity-header">
+          <h3>{{a.title}}</h3>
+          <span class="type-badge" [class]="a.type.toLowerCase()">{{a.type}}</span>
+        </div>
+        <div class="activity-details">
+          <p><strong>Fecha:</strong> {{a.date}}</p>
+          <p *ngIf="a.time"><strong>Hora:</strong> {{a.time}}</p>
+          <p *ngIf="a.location"><strong>Lugar:</strong> {{a.location}}</p>
+        </div>
+        <div class="activity-footer">
+          <span class="status" [class.pending]="a.status === 'pendiente'" [class.completed]="a.status === 'completada'">
+            {{a.status === 'pendiente' ? 'Pendiente' : 'Completada'}}
+          </span>
+        </div>
+      </div>
+    </div>
+    <p *ngIf="items.length === 0" class="no-activities">No tienes actividades registradas.</p>
+  </section>
+</main>
 <app-footer></app-footer>

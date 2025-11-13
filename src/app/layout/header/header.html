@@ -1,12 +1,16 @@
 <header class="navbar">
-  <div class="brand"><a routerLink="/">Agenda ITESO</a></div>
-  <nav>
+  <div class="brand"><a routerLink="/"><img src="/Logo_del_ITESO.svg" alt="ITESO" class="brand-logo"></a></div>
+  <nav class="nav-links" *ngIf="isLoggedIn">
     <a routerLink="/app/dashboard" routerLinkActive="active">Dashboard</a>
     <a routerLink="/app/activities" routerLinkActive="active">Actividades</a>
     <a routerLink="/app/activities/new" routerLinkActive="active">Nueva</a>
     <a routerLink="/app/templates" routerLinkActive="active">Plantillas</a>
     <a routerLink="/app/notifications" routerLinkActive="active">Notificaciones</a>
-    <a routerLink="/auth/login" routerLinkActive="active">Login</a>
-    <a routerLink="/auth/register" routerLinkActive="active">Registro</a>
   </nav>
+  <div class="auth-links" *ngIf="!isAuthPage">
+    <a routerLink="/auth/login" routerLinkActive="active" *ngIf="!isLoggedIn">Login</a>
+    <a routerLink="/auth/register" routerLinkActive="active" *ngIf="!isLoggedIn">Registro</a>
+    <button (click)="logout()" class="logout-btn" *ngIf="isLoggedIn">Logout</button>
+  </div>
+  <button class="back-btn" routerLink="/" *ngIf="isAuthPage">←</button>
 </header>

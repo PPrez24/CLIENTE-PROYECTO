@@ -7,7 +7,8 @@ import { Footer } from '../../layout/footer/footer';
   selector: 'app-templates-list',
   standalone: true,
   imports: [CommonModule, Header, Footer],
-  templateUrl: './templates-list.html'
+  templateUrl: './templates-list.html',
+  styleUrls: ['./templates-list.scss']
 })
 export class TemplatesList {
   items = [
