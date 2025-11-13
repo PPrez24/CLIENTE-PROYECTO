@@ -22,6 +22,7 @@ import { ToastService } from '../../../shared/services/toast';
       display: flex; align-items: center; gap: 0.75rem;
       font-weight: 500; font-size: 1.1rem;
       min-width: 350px; max-width: 500px;
+      z-index: 2000;
     }
     .toast.is-visible { transform: translateY(0); }
     .toast-success { background: #10b981; }
