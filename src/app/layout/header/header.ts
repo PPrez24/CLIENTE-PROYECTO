@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+
 import { Token } from '../../shared/services/token';
 
 @Component({
@@ -11,18 +12,15 @@ import { Token } from '../../shared/services/token';
   styleUrls: ['./header.scss']
 })
 export class Header {
-  constructor(private token: Token, private router: Router) {}
+  private tokenSvc = inject(Token);
+  private router = inject(Router);
 
   get isLoggedIn(): boolean {
-    return this.token.hasToken();
+    return this.tokenSvc.hasToken();
   }
 
-  get isAuthPage(): boolean {
-    return this.router.url === '/auth/login' || this.router.url === '/auth/register';
-  }
-
-  logout(): void {
-    this.token.setToken('');
-    window.location.reload(); // Para recargar y ocultar los links
+  logout() {
+    this.tokenSvc.clearToken();
+    this.router.navigateByUrl('/auth/login');
   }
 }

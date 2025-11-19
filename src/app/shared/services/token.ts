@@ -24,4 +24,10 @@ export class Token {
   hasToken(): boolean {
     return !!this.getToken();
   }
+
+  clearToken(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+    }
+  }
 }

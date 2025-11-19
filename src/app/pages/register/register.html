@@ -1,17 +1,59 @@
 <app-header></app-header>
 <main class="auth">
   <h2 appHighlight="rgba(99,102,241,.15)">Crear cuenta</h2>
-  <form>
-    <label>Nombre <input [(ngModel)]="name" name="name" placeholder="Tu nombre"/></label>
-    <label>Email <input type="email" [(ngModel)]="email" name="email" placeholder="tucorreo@iteso.mx"/></label>
-    <label>Contraseña
+  <form #f="ngForm" (ngSubmit)="register(f)">
+    <label>
+      Nombre
+      <input
+        [(ngModel)]="name"
+        name="name"
+        placeholder="Tu nombre"
+        required
+      />
+    </label>
+
+    <label>
+      Email
+      <input
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="tucorreo@iteso.mx"
+        required
+      />
+    </label>
+
+    <label>
+      Contraseña
       <div class="password-container">
-        <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password"/>
-        <button type="button" (click)="togglePassword()" class="toggle-password">{{ showPassword ? '🙈' : '👁️' }}</button>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          [(ngModel)]="password"
+          name="password"
+          required
+        />
+        <button
+          type="button"
+          (click)="togglePassword()"
+          class="toggle-password"
+        >
+          {{ showPassword ? '🙈' : '👁️' }}
+        </button>
       </div>
     </label>
-    <button class="btn" type="button" routerLink="app/dashboard">Registrarme</button>
+
+    <button
+      class="btn"
+      type="submit"
+      [disabled]="f.invalid || loading"
+    >
+      {{ loading ? 'Creando cuenta...' : 'Registrarme' }}
+    </button>
   </form>
-  <p class="register-section">¿Ya tienes cuenta? <a routerLink="/login" class="register-btn">Inicia sesión</a></p>
+
+  <p class="register-section">
+    ¿Ya tienes cuenta?
+    <a routerLink="/auth/login" class="register-btn">Inicia sesión</a>
+  </p>
 </main>
 <app-footer></app-footer>
