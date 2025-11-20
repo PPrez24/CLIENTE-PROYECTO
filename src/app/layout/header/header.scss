@@ -21,6 +21,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
 }
 
 .brand {
@@ -36,8 +37,10 @@
   text-decoration: none;
 }
 
-.logo-mark {
-  font-size: 1.6rem;
+.logo-img {
+  width: 2.5rem;
+  height: auto;
+  filter: brightness(0) invert(1);
 }
 
 .logo-text {
@@ -71,6 +74,11 @@
   transition: all 0.2s ease;
 }
 
+/* ensure nav links are clickable even if other elements exist on the page */
+.nav-links a, .auth-actions a, .auth-actions button {
+  pointer-events: auto;
+}
+
 .nav-links a:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
@@ -89,53 +97,87 @@
 }
 
 .link {
+  background: rgba(255, 255, 255, 0.1);
   color: #e5e7eb;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9rem;
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .link:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
   color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .btn-primary,
 .btn-outline {
   border-radius: 999px;
-  padding: 0.45rem 1.1rem;
+  padding: 0.5rem 1.2rem;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .btn-primary {
-  background: #facc15;
+  background: rgba(250, 204, 21, 0.8);
   color: #1f2937;
-  border-color: #facc15;
+  border-color: rgba(250, 204, 21, 0.8);
   box-shadow: 0 4px 12px rgba(250, 204, 21, 0.4);
+  text-decoration: none;
 }
 
 .btn-primary:hover {
-  background: #eab308;
-  border-color: #eab308;
+  background: rgba(234, 179, 8, 0.9);
+  border-color: rgba(234, 179, 8, 0.9);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(234, 179, 8, 0.5);
+  text-decoration: none;
 }
 
 .btn-outline {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   color: #e5e7eb;
-  border-color: rgba(229, 231, 235, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-outline:hover {
-  background: rgba(15, 23, 42, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-1px);
 }
   

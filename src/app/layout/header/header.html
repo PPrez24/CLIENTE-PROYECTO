@@ -1,7 +1,7 @@
 <header class="app-header">
   <div class="brand">
     <a routerLink="/" class="logo">
-      <span class="logo-mark">📅</span>
+      <img src="/Logo_del_ITESO.svg" alt="Logo ITESO" class="logo-img">
       <span class="logo-text">
         <strong>Agenda ITESO</strong>
         <small>Organiza tus actividades</small>
@@ -9,28 +9,30 @@
     </a>
   </div>
 
-  <nav class="nav-links" *ngIf="isLoggedIn; else publicNav">
+  <nav class="nav-links" *appAuthVisible="'auth'">
     <a routerLink="/app/dashboard" routerLinkActive="active">Dashboard</a>
     <a routerLink="/app/activities" routerLinkActive="active">Actividades</a>
     <a routerLink="/app/templates" routerLinkActive="active">Plantillas</a>
     <a routerLink="/app/notifications" routerLinkActive="active">Notificaciones</a>
   </nav>
 
-  <ng-template #publicNav>
-    <nav class="nav-links">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
-    </nav>
-  </ng-template>
-
   <div class="auth-actions">
-    <ng-container *ngIf="isLoggedIn; else guest">
+    <ng-container *appAuthVisible="'auth'">
       <button type="button" class="btn-outline" (click)="logout()">
         Cerrar sesión
       </button>
     </ng-container>
-    <ng-template #guest>
-      <a routerLink="/auth/login" class="link">Iniciar sesión</a>
-      <a routerLink="/auth/register" class="btn-primary">Crear cuenta</a>
-    </ng-template>
+
+    <ng-container *appAuthVisible="'guest'">
+      <ng-container *ngIf="!isAuthPage; else backBtn">
+        <a routerLink="/auth/login" class="link">Iniciar sesión</a>
+        <a routerLink="/auth/register" class="btn-primary">Crear cuenta</a>
+      </ng-container>
+      <ng-template #backBtn>
+        <button type="button" class="back-btn" (click)="goHome()">
+          ← Volver
+        </button>
+      </ng-template>
+    </ng-container>
   </div>
 </header>

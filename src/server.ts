@@ -5,11 +5,38 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+// Load local .env in development. This is server-side only and will populate
+// process.env with values from a top-level `.env` file when present.
+// In production prefer provider-managed secrets or `GOOGLE_APPLICATION_CREDENTIALS`.
+import dotenv from 'dotenv';
+dotenv.config();
+// cookie-parser removed: this project now uses client-only tokens (no session cookies)
 import { join } from 'node:path';
+import admin from 'firebase-admin';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
+
+// Inicializar firebase-admin si se proporciona la credencial en la variable de entorno
+// (por ejemplo: en GitHub Actions se puede exportar el JSON en FIREBASE_SERVICE_ACCOUNT_JSON)
+if (process.env['FIREBASE_SERVICE_ACCOUNT_JSON']) {
+  try {
+    const serviceAccount = JSON.parse(process.env['FIREBASE_SERVICE_ACCOUNT_JSON'] as string);
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount as any) });
+    console.log('firebase-admin inicializado desde FIREBASE_SERVICE_ACCOUNT_JSON');
+  } catch (e) {
+    console.warn('No se pudo inicializar firebase-admin desde FIREBASE_SERVICE_ACCOUNT_JSON:', e);
+  }
+} else if (process.env['GOOGLE_APPLICATION_CREDENTIALS']) {
+  try {
+    // Permitir que la librería use GOOGLE_APPLICATION_CREDENTIALS en entorno
+    admin.initializeApp();
+    console.log('firebase-admin inicializado usando GOOGLE_APPLICATION_CREDENTIALS');
+  } catch (e) {
+    console.warn('No se pudo inicializar firebase-admin usando GOOGLE_APPLICATION_CREDENTIALS:', e);
+  }
+}
 const angularApp = new AngularNodeAppEngine();
 
 /**
@@ -35,6 +62,11 @@ app.use(
   }),
 );
 
+// Parse JSON bodies for API endpoints
+app.use(express.json());
+
+// Session cookie endpoints removed: the app now uses client-side idTokens stored in localStorage.
+
 /**
  * Handle all other requests by rendering the Angular application.
  */
@@ -45,6 +77,40 @@ app.use((req, res, next) => {
       response ? writeResponseToNodeResponse(response, res) : next(),
     )
     .catch(next);
+});
+
+// Middleware opcional para verificar ID token en endpoints /api
+async function verifyFirebaseToken(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (!admin.apps || admin.apps.length === 0) {
+    // firebase-admin no inicializado; saltar verificación
+    return next();
+  }
+
+  const authHeader = (req.headers.authorization || '') as string;
+  let idToken = '';
+  if (authHeader.startsWith('Bearer ')) {
+    idToken = authHeader.split(' ')[1];
+  // session cookie logic removed; only check Authorization Bearer header
+  }
+
+  if (!idToken) return next();
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    // adjuntar usuario verificado a la request
+    (req as any).user = decoded;
+    return next();
+  } catch (err) {
+    console.warn('verifyIdToken falló:', err);
+    return next();
+  }
+}
+
+// Ejemplo de endpoint protegido
+app.get('/api/verify', verifyFirebaseToken, (req, res) => {
+  const user = (req as any).user || null;
+  if (!user) return res.status(401).json({ ok: false, message: 'No token provided or invalid' });
+  return res.json({ ok: true, uid: user.uid, email: user.email });
 });
 
 /**

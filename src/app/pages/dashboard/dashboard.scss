@@ -7,6 +7,47 @@
   position: relative;
 }
 
+.welcome-banner {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.welcome-banner p {
+  color: $azul-oscuro;
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.welcome-banner .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: $azul-oscuro;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.welcome-banner .close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .dashboard::before {
   content: '';
   position: absolute;

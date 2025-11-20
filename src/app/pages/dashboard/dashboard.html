@@ -1,7 +1,12 @@
 <app-header></app-header>
 <main class="dashboard">
+  <div *ngIf="showWelcome" class="welcome-banner">
+    <p>¡Gracias por registrarte! Ya estás registrado y logueado.</p>
+    <button class="close-btn" (click)="closeWelcome()">&times;</button>
+  </div>
   <section class="welcome">
-    <h1>¡Bienvenido a Agenda ITESO!</h1>
+    <h1 *ngIf="isFirstLogin">¡Bienvenido a Agenda ITESO, {{userName || 'Usuario'}}!</h1>
+    <h1 *ngIf="!isFirstLogin">¡Bienvenido de vuelta, {{userName || 'Usuario'}}!</h1>
     <p>Organiza tus actividades académicas, deportivas y más. Tienes {{pendingCount()}} actividades pendientes.</p>
   </section>
 

@@ -184,3 +184,65 @@
   transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
 }
+
+.auth .error {
+  color: #fecaca;
+  background: rgba(254, 202, 202, 0.1);
+  border: 1px solid rgba(254, 202, 202, 0.3);
+  border-radius: 10px;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.auth .hint {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.auth .email-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.auth .email-input-group input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.auth .email-suffix {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 1rem 0;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.auth .loading {
+  color: #ffffff;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

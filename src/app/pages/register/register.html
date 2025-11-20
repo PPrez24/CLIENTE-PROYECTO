@@ -3,24 +3,18 @@
   <h2 appHighlight="rgba(99,102,241,.15)">Crear cuenta</h2>
   <form #f="ngForm" (ngSubmit)="register(f)">
     <label>
-      Nombre
-      <input
-        [(ngModel)]="name"
-        name="name"
-        placeholder="Tu nombre"
-        required
-      />
-    </label>
-
-    <label>
       Email
-      <input
-        type="email"
-        [(ngModel)]="email"
-        name="email"
-        placeholder="tucorreo@iteso.mx"
-        required
-      />
+      <div class="email-input-group">
+        <input
+          type="text"
+          [(ngModel)]="emailPrefix"
+          name="emailPrefix"
+          placeholder="tu.nombre"
+          pattern="^[A-Za-z0-9._%+-]+$"
+          required
+        />
+        <span class="email-suffix">@iteso.mx</span>
+      </div>
     </label>
 
     <label>
@@ -47,9 +41,11 @@
       type="submit"
       [disabled]="f.invalid || loading"
     >
-      {{ loading ? 'Creando cuenta...' : 'Registrarme' }}
+      <span *ngIf="!loading">Registrarme</span>
+      <span *ngIf="loading" class="spinner"></span>
     </button>
   </form>
+  <p class="error" *ngIf="error">{{ error }}</p>
 
   <p class="register-section">
     ¿Ya tienes cuenta?

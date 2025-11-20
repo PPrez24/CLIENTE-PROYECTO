@@ -10,12 +10,13 @@ import { TemplatesList } from './pages/templates/templates-list';
 import { NotificationsPage } from './pages/notifications/notifications';
 import { NotFound } from './pages/not-found/not-found';
 import { authGuard } from './shared/guards/auth-guard';
+import { guestGuard } from './shared/guards/guest-guard';
 
 export const routes: Routes = [
   // públicas
   { path: '', component: Landing },
-  { path: 'auth/login', component: Login },
-  { path: 'auth/register', component: Register },
+  { path: 'auth/login', component: Login, canActivate: [guestGuard] },
+  { path: 'auth/register', component: Register, canActivate: [guestGuard] },
 
   // privadas (prefijo /app)
   { path: 'app/dashboard', component: Dashboard, canActivate: [authGuard] },

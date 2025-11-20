@@ -1,22 +1,33 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Token {
+  private platformId: Object;
+  private tokenKey = 'token';
+  public token$ = new BehaviorSubject<string>('');
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.platformId = platformId;
+    if (isPlatformBrowser(this.platformId)) {
+      const t = localStorage.getItem(this.tokenKey) || '';
+      this.token$.next(t);
+    }
+  }
 
   setToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('token', token);
+      localStorage.setItem(this.tokenKey, token);
+      this.token$.next(token);
     }
   }
   
   getToken(): string {
     if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('token') || '';
+      return localStorage.getItem(this.tokenKey) || '';
     }
     return '';
   }
@@ -27,7 +38,8 @@ export class Token {
 
   clearToken(): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
+      localStorage.removeItem(this.tokenKey);
+      this.token$.next('');
     }
   }
 }
