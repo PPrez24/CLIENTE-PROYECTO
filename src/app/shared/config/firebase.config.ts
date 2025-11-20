@@ -1,4 +1,3 @@
-// Firebase client config - public keys for web SDK
 export const firebaseConfig = {
   apiKey: "AIzaSyAU0JoHTKZWSU6l1Zy-WpkPUluEz52FFqM",
   authDomain: "proyecto-cliente-9696a.firebaseapp.com",
