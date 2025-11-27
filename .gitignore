@@ -29,6 +29,7 @@ yarn-error.log
 .history/*
 
 src/shared/config/firebase.config.ts
+firebase.config.ts
 
 # Miscellaneous
 /.angular/cache
