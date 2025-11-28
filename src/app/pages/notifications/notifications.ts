@@ -20,7 +20,6 @@ export class NotificationsPage {
     private toast: ToastService,
     private socket: SocketService
   ) {
-    // Escucha global de eventos broadcast del servidor
     this.socket.on<any>('serverBroadcast').subscribe(msg => {
       if (msg?.type === 'activityCreated') {
         this.toast.show(

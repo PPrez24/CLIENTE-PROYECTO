@@ -11,12 +11,13 @@
       <button class="view-btn" [class.active]="currentView === 'week'" (click)="setView('week')">Semana</button>
       <button class="view-btn" [class.active]="currentView === 'list'" (click)="setView('list')">Lista</button>
     </div>
-    <div class="month-navigation">
+    <div class="month-navigation" *ngIf="currentView !== 'list'">
       <button class="nav-btn" (click)="previousMonth()">←</button>
       <h2 class="current-month">{{ currentMonth | date:'MMMM yyyy' }}</h2>
       <button class="nav-btn" (click)="nextMonth()">→</button>
     </div>
     <a routerLink="/app/activities/new" class="action-btn">
+      <span class="icon">＋</span>
       <span>Nueva Actividad</span>
     </a>
   </section>
@@ -75,6 +76,7 @@
           <div class="date">{{ activity.date | date:'d' }}</div>
           <div class="month">{{ activity.date | date:'MMM' }}</div>
         </div>
+
         <div class="activity-content">
           <h3>{{ activity.title }}</h3>
           <div class="activity-meta">
@@ -83,13 +85,46 @@
             <span class="location" *ngIf="activity.location">📍 {{ activity.location }}</span>
           </div>
         </div>
+
         <div class="activity-status">
-          <span class="status" [class.pending]="activity.status === 'pendiente'" [class.completed]="activity.status === 'completada'">
+          <span class="status"
+                [class.pending]="activity.status === 'pendiente'"
+                [class.completed]="activity.status === 'completada'">
             {{ activity.status === 'pendiente' ? 'Pendiente' : 'Completada' }}
           </span>
+
+          <div class="activity-actions">
+            <button type="button" class="btn-small btn-edit" (click)="edit(activity)">
+              Editar
+            </button>
+            <button type="button" class="btn-small btn-delete" (click)="askDelete(activity)">
+              Eliminar
+            </button>
+          </div>
         </div>
       </div>
+
+      <p *ngIf="sortedActivities.length === 0" class="no-activities">
+        No tienes actividades registradas.
+      </p>
     </div>
   </section>
+
+  <!-- Modal de eliminación -->
+  <div class="dialog-overlay" *ngIf="showDeleteDialog" (click)="cancelDelete()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <h3>Confirmar eliminación</h3>
+      <p>
+        ¿Estás seguro de que deseas eliminar la actividad
+        <strong>{{ activityToDelete?.title }}</strong>?<br />
+        Esta acción no se puede deshacer.
+      </p>
+      <div class="dialog-actions">
+        <button class="btn-secondary" type="button" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn-danger" type="button" (click)="confirmDelete()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+  <app-toast></app-toast>
 </main>
 <app-footer></app-footer>

@@ -16,7 +16,6 @@ import http from 'node:http';
 import { Server as SocketIOServer } from 'socket.io';
 
 const browserDistFolder = path.join(import.meta.dirname, '../browser');
-
 const app = express();
 
 if (process.env['FIREBASE_SERVICE_ACCOUNT_JSON']) {
@@ -66,7 +65,6 @@ const storage = multer.diskStorage({
     cb(null, `${base}_${Date.now()}${ext}`);
   },
 });
-
 const upload = multer({ storage });
 
 app.use(
@@ -116,24 +114,32 @@ app.get('/api/verify', verifyFirebaseToken, (req, res) => {
   return res.json({ ok: true, uid: user.uid, email: user.email });
 });
 
-app.post('/api/upload', verifyFirebaseToken, upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ ok: false, message: 'No file provided' });
+let io: SocketIOServer;
+
+app.post(
+  '/api/upload',
+  verifyFirebaseToken,
+  upload.single('file'),
+  (req: Request, res: Response) => {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, message: 'No file provided' });
+    }
+
+    const fileUrl = `/uploads/profile/${req.file.filename}`;
+    if (io) {
+      io.emit('fileUploaded', {
+        fileUrl,
+        originalName: req.file.originalname,
+      });
+    }
+
+    return res.json({
+      ok: true,
+      fileName: req.file.filename,
+      fileUrl,
+    });
   }
-
-  const fileUrl = `/uploads/profile/${req.file.filename}`;
-
-  io.emit('fileUploaded', {
-    fileUrl,
-    originalName: req.file.originalname,
-  });
-
-  return res.json({
-    ok: true,
-    fileName: req.file.filename,
-    fileUrl,
-  });
-});
+);
 
 app.use((req, res, next) => {
   angularApp
@@ -146,9 +152,9 @@ app.use((req, res, next) => {
 
 const server = http.createServer(app);
 
-const io = new SocketIOServer(server, {
+io = new SocketIOServer(server, {
   cors: {
-    origin: '*', 
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
@@ -175,6 +181,31 @@ io.on('connection', (socket) => {
       ...payload,
     });
   });
+
+  socket.on('activity:created', (activity: any) => {
+    console.log('activity:created', activity);
+    io.emit('serverBroadcast', {
+      type: 'activityCreated',
+      activity,
+    });
+  });
+
+  socket.on('activity:updated', (activity: any) => {
+    console.log('activity:updated', activity);
+    io.emit('serverBroadcast', {
+      type: 'activityUpdated',
+      activity,
+    });
+  });
+
+  socket.on('activity:deleted', (payload: any) => {
+    console.log('activity:deleted', payload);
+    io.emit('serverBroadcast', {
+      type: 'activityDeleted',
+      id: payload?.id,
+      title: payload?.title,
+    });
+  });
 });
 
 if (isMainModule(import.meta.url)) {
@@ -184,7 +215,6 @@ if (isMainModule(import.meta.url)) {
     if (error) {
       throw error;
     }
-
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }

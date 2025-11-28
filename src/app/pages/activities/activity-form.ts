@@ -5,9 +5,9 @@ import { Header } from '../../layout/header/header';
 import { Footer } from '../../layout/footer/footer';
 import { ToastComponent } from '../ui/toast/toast';
 import { ToastService } from '../../shared/services/toast';
-import { ActivatedRoute } from '@angular/router';
-
-type ActivityType = 'Académico' | 'Deportivo' | 'Cultural' | 'Voluntariado';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActivitiesService, ActivityType } from '../../shared/services/activities';
+import { SocketService } from '../../shared/services/socket.service';
 
 @Component({
   selector: 'app-activity-form',
@@ -17,6 +17,9 @@ type ActivityType = 'Académico' | 'Deportivo' | 'Cultural' | 'Voluntariado';
   styleUrls: ['./activity-form.scss']
 })
 export class ActivityForm implements OnInit {
+  isEdit = false;
+  private activityId: string | null = null;
+
   model: {
     title: string;
     date: string; // yyyy-mm-dd
@@ -35,13 +38,41 @@ export class ActivityForm implements OnInit {
 
   constructor(
     private toast: ToastService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private activities: ActivitiesService,
+    private socket: SocketService
   ) {}
 
   ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
     const templateId = this.route.snapshot.queryParamMap.get('template');
-    if (templateId) {
+
+    if (id) {
+      const existing = this.activities.getById(id);
+      if (existing) {
+        this.isEdit = true;
+        this.activityId = id;
+        this.model = {
+          title: existing.title,
+          date: existing.date,
+          time: existing.time,
+          location: existing.location,
+          type: existing.type,
+          status: existing.status
+        };
+      } else {
+        this.toast.show('La actividad no existe.', 'error');
+        this.router.navigate(['/app/activities']);
+      }
+    } else if (templateId) {
       this.applyTemplate(templateId);
+    } else {
+        const today = new Date();
+        const y = today.getFullYear();
+        const m = String(today.getMonth() + 1).padStart(2, '0');
+        const d = String(today.getDate()).padStart(2, '0');
+        this.model.date = `${y}-${m}-${d}`;
     }
   }
 
@@ -51,7 +82,6 @@ export class ActivityForm implements OnInit {
 
     switch (templateId) {
       case 'clases-diarias': {
-        // Pensado para bloques de clases en la semana
         this.model = {
           ...this.model,
           title: 'Clase de [Materia]',
@@ -66,9 +96,8 @@ export class ActivityForm implements OnInit {
       }
 
       case 'proyecto-final': {
-        // Pensado para entrega de proyecto grande, con deadline
         const deadline = new Date();
-        deadline.setDate(deadline.getDate() + 7); // por defecto, +7 días
+        deadline.setDate(deadline.getDate() + 7);
         const deadlineStr = deadline.toISOString().slice(0, 10);
 
         this.model = {
@@ -85,24 +114,29 @@ export class ActivityForm implements OnInit {
       }
 
       default:
-        // Si el id no coincide, no hacemos nada especial
         break;
     }
   }
 
   save() {
-    this.toast.show('Se creó correctamente la actividad (mock)', 'success');
-    // aquí en el futuro puedes integrar con ActivitiesService.add(...)
+    if (this.isEdit && this.activityId) {
+      const updated = this.activities.update(this.activityId, { ...this.model });
+      if (updated) {
+        this.toast.show('Actividad actualizada correctamente.', 'success');
+        this.socket.emit('activity:updated', updated);
+      } else {
+        this.toast.show('No se pudo actualizar la actividad.', 'error');
+      }
+    } else {
+      const created = this.activities.create({ ...this.model });
+      this.toast.show('Actividad creada correctamente.', 'success');
+      this.socket.emit('activity:created', created);
+    }
+
+    this.router.navigate(['/app/activities']);
   }
 
-  resetForm() {
-    this.model = {
-      title: '',
-      date: '',
-      time: '',
-      location: '',
-      type: 'Académico',
-      status: 'pendiente'
-    };
+  cancel() {
+    this.router.navigate(['/app/activities']);
   }
 }
