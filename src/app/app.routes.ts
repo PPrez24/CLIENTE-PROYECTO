@@ -11,6 +11,7 @@ import { NotificationsPage } from './pages/notifications/notifications';
 import { NotFound } from './pages/not-found/not-found';
 import { authGuard } from './shared/guards/auth-guard';
 import { guestGuard } from './shared/guards/guest-guard';
+import { EditProfilePage } from './pages/profile/edit-profile';
 
 export const routes: Routes = [
   // públicas
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'app/activities/new', component: ActivityForm, canActivate: [authGuard] },
   { path: 'app/templates', component: TemplatesList, canActivate: [authGuard] },
   { path: 'app/notifications', component: NotificationsPage, canActivate: [authGuard] },
+  { path: 'app/profile', component: EditProfilePage, canActivate: [authGuard] },
 
   // 404
   { path: '**', component: NotFound }

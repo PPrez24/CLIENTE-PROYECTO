@@ -2,19 +2,29 @@
 <main class="templates">
   <h2>Plantillas</h2>
   <div class="intro">
-    <p>Descubre una variedad de plantillas predefinidas para acelerar la creación de tus actividades. Cada plantilla incluye campos personalizables que puedes adaptar a tus necesidades específicas.</p>
+    <p>
+      Descubre una variedad de plantillas predefinidas para acelerar la creación de tus actividades.
+      Cada plantilla incluye campos preconfigurados que puedes adaptar a tus necesidades.
+    </p>
   </div>
+
   <ul class="cards">
     <li *ngFor="let t of items" class="card">
-      <h3>{{t.name}}</h3>
-      <p>{{t.fields}} campos</p>
-      <button class="btn" type="button">Usar (mock)</button>
+      <h3>{{ t.name }}</h3>
+      <p class="desc">{{ t.desc }}</p>
+      <p class="meta">{{ t.fields }} campos sugeridos</p>
+      <button class="btn" type="button" (click)="useTemplate(t)">
+        Usar plantilla
+      </button>
     </li>
   </ul>
+
   <section class="comunidad">
     <h3>Comunidad</h3>
     <p>Próximamente...</p>
-    <p>Comparte tus propias plantillas con la comunidad y descubre nuevas ideas de otros usuarios.</p>
+    <p>
+      Comparte tus propias plantillas con la comunidad y descubre nuevas ideas de otros usuarios.
+    </p>
   </section>
 </main>
 <app-footer></app-footer>

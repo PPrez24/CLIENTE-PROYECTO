@@ -10,7 +10,10 @@
       <div class="form-group">
         <label>Tipo</label>
         <select name="type" [(ngModel)]="model.type">
-          <option>Académico</option><option>Deportivo</option><option>Cultural</option><option>Voluntariado</option>
+          <option>Académico</option>
+          <option>Deportivo</option>
+          <option>Cultural</option>
+          <option>Voluntariado</option>
         </select>
       </div>
       <div class="row">
@@ -30,12 +33,17 @@
       <div class="form-group">
         <label>Estatus</label>
         <select name="status" [(ngModel)]="model.status">
-          <option>pendiente</option><option>completada</option>
+          <option>pendiente</option>
+          <option>completada</option>
         </select>
       </div>
       <div class="form-actions">
-        <button class="btn btn-primary" type="submit" [disabled]="!f.form.valid">Guardar</button>
-        <button class="btn btn-secondary" type="button" (click)="resetForm()">Cancelar</button>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.form.valid">
+          Guardar
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="resetForm()">
+          Cancelar
+        </button>
       </div>
     </form>
   </div>

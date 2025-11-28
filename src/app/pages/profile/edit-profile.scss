@@ -1,0 +1,236 @@
+@import '../../../styles/_variables.scss';
+
+.profile {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $azul-claro 0%, $azul-medio 30%, $azul-oscuro 100%);
+  padding: 6rem 2rem 3rem;
+  position: relative;
+}
+
+/* Fondo con logo ITESO difuminado, igual que en templates */
+.profile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/Logo_del_ITESO.svg') top center / cover no-repeat;
+  opacity: 0.08;
+  filter: blur(15px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Contenedor central */
+.profile-header,
+.profile-content {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header del perfil */
+.profile-header {
+  margin-bottom: 2rem;
+  text-align: center;
+
+  h2 {
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  p {
+    color: #e5e7f5;
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Layout principal: formulario + avatar */
+.profile-content {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards tipo glassmorphism */
+.profile-form,
+.profile-avatar {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1.1rem;
+  padding: 1.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.45);
+  color: #f9fafb;
+}
+
+/* Campos del formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #e5e7ff;
+  }
+
+  input,
+  textarea {
+    border-radius: 0.6rem;
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: #111827;
+
+    &:focus {
+      outline: none;
+      border-color: $azul-claro;
+      box-shadow: 0 0 0 1px rgba($azul-claro, 0.45);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+}
+
+/* Botones estilo Agenda ITESO */
+.btn {
+  background: transparent;
+  color: $azul-claro;
+  padding: 0.8rem 2rem;
+  border-radius: 20px;
+  border: 1px solid $azul-claro;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Botón principal (guardar cambios) */
+.btn.primary {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.4);
+
+  &:hover:not(:disabled) {
+  background: rgba($azul-claro, 0.2);
+  color: $blanco;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px 0 rgba($azul-medio, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+    box-shadow: none;
+  }
+}
+
+/* Botón secundario (cancelar, reset, etc.) */
+.btn.secondary {
+  background: transparent;
+  color: #e5e7ff;
+  border-color: rgba(229, 231, 235, 0.65);
+
+  &:hover:not(:disabled) {
+    background: rgba(15, 23, 42, 0.35);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+/* Avatar / foto de perfil */
+.profile-avatar {
+  .avatar-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+
+    img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba($azul-claro, 0.8);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.6);
+      background-color: #f9fafb;
+    }
+
+    .avatar-placeholder {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 2px dashed rgba(229, 231, 235, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7f5;
+      font-size: 0.9rem;
+      background: rgba(15, 23, 42, 0.4);
+      text-align: center;
+      padding: 0.5rem;
+    }
+  }
+
+  .avatar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .file-input {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(229, 231, 235, 0.8);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.2);
+      color: #111827;
+      transition: all 0.25s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+      }
+
+      input[type='file'] {
+        display: none;
+      }
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #e5e7f5;
+      opacity: 0.85;
+    }
+  }
+}

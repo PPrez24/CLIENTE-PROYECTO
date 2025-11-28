@@ -2,6 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Header } from '../../layout/header/header';
 import { Footer } from '../../layout/footer/footer';
+import { Router } from '@angular/router';
+
+interface TemplateDef {
+  id: string;
+  name: string;
+  desc: string;
+  fields: number;
+}
 
 @Component({
   selector: 'app-templates-list',
@@ -11,8 +19,26 @@ import { Footer } from '../../layout/footer/footer';
   styleUrls: ['./templates-list.scss']
 })
 export class TemplatesList {
-  items = [
-    { name: 'Plantilla A', desc: 'Uso general', fields: 6 },
-    { name: 'Plantilla B', desc: 'Reporte semanal', fields: 9 },
+  constructor(private router: Router) {}
+
+  items: TemplateDef[] = [
+    {
+      id: 'clases-diarias',
+      name: 'Horario de clases',
+      desc: 'Bloque típico de clases entre semana, ideal para horarios como 8:00–10:00 en aula.',
+      fields: 6
+    },
+    {
+      id: 'proyecto-final',
+      name: 'Entrega de proyecto final',
+      desc: 'Pensada para entregar proyectos grandes, con fecha y hora límite configuradas.',
+      fields: 9
+    }
   ];
+
+  useTemplate(t: TemplateDef) {
+    this.router.navigate(['/app/activities/new'], {
+      queryParams: { template: t.id }
+    });
+  }
 }
