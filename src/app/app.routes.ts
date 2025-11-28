@@ -7,10 +7,10 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { ActivitiesList } from './pages/activities/activities-list';
 import { ActivityForm } from './pages/activities/activity-form';
 import { TemplatesList } from './pages/templates/templates-list';
-import { NotificationsPage } from './pages/notifications/notifications';
 import { NotFound } from './pages/not-found/not-found';
 import { authGuard } from './shared/guards/auth-guard';
 import { guestGuard } from './shared/guards/guest-guard';
+import { EditProfilePage } from './pages/profile/edit-profile';
 
 export const routes: Routes = [
   // públicas
@@ -22,8 +22,9 @@ export const routes: Routes = [
   { path: 'app/dashboard', component: Dashboard, canActivate: [authGuard] },
   { path: 'app/activities', component: ActivitiesList, canActivate: [authGuard] },
   { path: 'app/activities/new', component: ActivityForm, canActivate: [authGuard] },
+  { path: 'app/activities/:id/edit', component: ActivityForm, canActivate: [authGuard] },
   { path: 'app/templates', component: TemplatesList, canActivate: [authGuard] },
-  { path: 'app/notifications', component: NotificationsPage, canActivate: [authGuard] },
+  { path: 'app/profile', component: EditProfilePage, canActivate: [authGuard] },
 
   // 404
   { path: '**', component: NotFound }

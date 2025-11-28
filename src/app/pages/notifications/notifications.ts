@@ -4,6 +4,7 @@ import { Header } from '../../layout/header/header';
 import { Footer } from '../../layout/footer/footer';
 import { ToastComponent } from '../ui/toast/toast';
 import { ToastService } from '../../shared/services/toast';
+import { SocketService } from '../../shared/services/socket.service';
 
 @Component({
   selector: 'app-notifications',
@@ -15,7 +16,29 @@ import { ToastService } from '../../shared/services/toast';
 export class NotificationsPage {
   showDialog = false;
 
-  constructor(private toast: ToastService) {}
+  constructor(
+    private toast: ToastService,
+    private socket: SocketService
+  ) {
+    this.socket.on<any>('serverBroadcast').subscribe(msg => {
+      if (msg?.type === 'activityCreated') {
+        this.toast.show(
+          `Nueva actividad creada: ${msg.activity?.title}`,
+          'info'
+        );
+      } else if (msg?.type === 'fileUploaded') {
+        this.toast.show(
+          `Archivo subido: ${msg.fileName}`,
+          'info'
+        );
+      } else {
+        this.toast.show(
+          `Evento recibido: ${JSON.stringify(msg)}`,
+          'info'
+        );
+      }
+    });
+  }
 
   showSuccess() {
     this.toast.show('¡Actividad creada exitosamente! 🎉', 'success');

@@ -4,85 +4,87 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import express from 'express';
-// Load local .env in development. This is server-side only and will populate
-// process.env with values from a top-level `.env` file when present.
-// In production prefer provider-managed secrets or `GOOGLE_APPLICATION_CREDENTIALS`.
+import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
-// cookie-parser removed: this project now uses client-only tokens (no session cookies)
-import { join } from 'node:path';
+
+import path from 'node:path';
+import fs from 'node:fs';
 import admin from 'firebase-admin';
+import multer from 'multer';
+import http from 'node:http';
+import { Server as SocketIOServer } from 'socket.io';
 
-const browserDistFolder = join(import.meta.dirname, '../browser');
-
+const browserDistFolder = path.join(import.meta.dirname, '../browser');
 const app = express();
 
-// Inicializar firebase-admin si se proporciona la credencial en la variable de entorno
-// (por ejemplo: en GitHub Actions se puede exportar el JSON en FIREBASE_SERVICE_ACCOUNT_JSON)
 if (process.env['FIREBASE_SERVICE_ACCOUNT_JSON']) {
   try {
-    const serviceAccount = JSON.parse(process.env['FIREBASE_SERVICE_ACCOUNT_JSON'] as string);
+    const serviceAccount = JSON.parse(
+      process.env['FIREBASE_SERVICE_ACCOUNT_JSON'] as string
+    );
     admin.initializeApp({ credential: admin.credential.cert(serviceAccount as any) });
     console.log('firebase-admin inicializado desde FIREBASE_SERVICE_ACCOUNT_JSON');
   } catch (e) {
-    console.warn('No se pudo inicializar firebase-admin desde FIREBASE_SERVICE_ACCOUNT_JSON:', e);
+    console.warn(
+      'No se pudo inicializar firebase-admin desde FIREBASE_SERVICE_ACCOUNT_JSON:',
+      e
+    );
   }
 } else if (process.env['GOOGLE_APPLICATION_CREDENTIALS']) {
   try {
-    // Permitir que la librería use GOOGLE_APPLICATION_CREDENTIALS en entorno
     admin.initializeApp();
     console.log('firebase-admin inicializado usando GOOGLE_APPLICATION_CREDENTIALS');
   } catch (e) {
     console.warn('No se pudo inicializar firebase-admin usando GOOGLE_APPLICATION_CREDENTIALS:', e);
   }
 }
+
 const angularApp = new AngularNodeAppEngine();
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+const uploadsRoot = path.join(import.meta.dirname, '../uploads');
+if (!fs.existsSync(uploadsRoot)) {
+  fs.mkdirSync(uploadsRoot, { recursive: true });
+}
 
-/**
- * Serve static files from /browser
- */
+const avatarsDir = path.join(uploadsRoot, 'profile');
+if (!fs.existsSync(avatarsDir)) {
+  fs.mkdirSync(avatarsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, avatarsDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname) || '';
+    const base = path
+      .basename(file.originalname, ext)
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-]/g, '');
+    cb(null, `${base}_${Date.now()}${ext}`);
+  },
+});
+const upload = multer({ storage });
+
 app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
     index: false,
     redirect: false,
-  }),
+  })
 );
 
-// Parse JSON bodies for API endpoints
+app.use('/uploads', express.static(uploadsRoot));
+
 app.use(express.json());
 
-// Session cookie endpoints removed: the app now uses client-side idTokens stored in localStorage.
-
-/**
- * Handle all other requests by rendering the Angular application.
- */
-app.use((req, res, next) => {
-  angularApp
-    .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
-    .catch(next);
-});
-
-// Middleware opcional para verificar ID token en endpoints /api
-async function verifyFirebaseToken(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function verifyFirebaseToken(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (!admin.apps || admin.apps.length === 0) {
-    // firebase-admin no inicializado; saltar verificación
     return next();
   }
 
@@ -90,14 +92,12 @@ async function verifyFirebaseToken(req: express.Request, res: express.Response, 
   let idToken = '';
   if (authHeader.startsWith('Bearer ')) {
     idToken = authHeader.split(' ')[1];
-  // session cookie logic removed; only check Authorization Bearer header
   }
 
   if (!idToken) return next();
 
   try {
     const decoded = await admin.auth().verifyIdToken(idToken);
-    // adjuntar usuario verificado a la request
     (req as any).user = decoded;
     return next();
   } catch (err) {
@@ -106,29 +106,117 @@ async function verifyFirebaseToken(req: express.Request, res: express.Response, 
   }
 }
 
-// Ejemplo de endpoint protegido
 app.get('/api/verify', verifyFirebaseToken, (req, res) => {
   const user = (req as any).user || null;
-  if (!user) return res.status(401).json({ ok: false, message: 'No token provided or invalid' });
+  if (!user) {
+    return res.status(401).json({ ok: false, message: 'No token provided or invalid' });
+  }
   return res.json({ ok: true, uid: user.uid, email: user.email });
 });
 
-/**
- * Start the server if this module is the main entry point.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
+let io: SocketIOServer;
+
+app.post(
+  '/api/upload',
+  verifyFirebaseToken,
+  upload.single('file'),
+  (req: Request, res: Response) => {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, message: 'No file provided' });
+    }
+
+    const fileUrl = `/uploads/profile/${req.file.filename}`;
+    if (io) {
+      io.emit('fileUploaded', {
+        fileUrl,
+        originalName: req.file.originalname,
+      });
+    }
+
+    return res.json({
+      ok: true,
+      fileName: req.file.filename,
+      fileUrl,
+    });
+  }
+);
+
+app.use((req, res, next) => {
+  angularApp
+    .handle(req)
+    .then((response) =>
+      response ? writeResponseToNodeResponse(response, res) : next()
+    )
+    .catch(next);
+});
+
+const server = http.createServer(app);
+
+io = new SocketIOServer(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('Nuevo cliente conectado', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado', socket.id);
+  });
+
+  socket.on('profile:updateAvatar', (payload: any) => {
+    console.log('profile:updateAvatar', payload);
+    socket.broadcast.emit('profileUpdated', {
+      type: 'avatar',
+      ...payload,
+    });
+  });
+
+  socket.on('profile:updateData', (payload: any) => {
+    console.log('profile:updateData', payload);
+    socket.broadcast.emit('profileUpdated', {
+      type: 'data',
+      ...payload,
+    });
+  });
+
+  socket.on('activity:created', (activity: any) => {
+    console.log('activity:created', activity);
+    io.emit('serverBroadcast', {
+      type: 'activityCreated',
+      activity,
+    });
+  });
+
+  socket.on('activity:updated', (activity: any) => {
+    console.log('activity:updated', activity);
+    io.emit('serverBroadcast', {
+      type: 'activityUpdated',
+      activity,
+    });
+  });
+
+  socket.on('activity:deleted', (payload: any) => {
+    console.log('activity:deleted', payload);
+    io.emit('serverBroadcast', {
+      type: 'activityDeleted',
+      id: payload?.id,
+      title: payload?.title,
+    });
+  });
+});
+
 if (isMainModule(import.meta.url)) {
   const port = process.env['PORT'] || 4000;
-  app.listen(port, (error) => {
+
+  server.listen(port, (error?: any) => {
     if (error) {
       throw error;
     }
-
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }
 
-/**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
- */
 export const reqHandler = createNodeRequestHandler(app);

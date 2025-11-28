@@ -43,6 +43,8 @@
   margin: 0 auto;
 }
 
+/* Controles superiores */
+
 .calendar-controls {
   display: flex;
   justify-content: space-between;
@@ -53,6 +55,8 @@
   border-radius: 15px;
   padding: 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .view-toggle {
@@ -144,7 +148,8 @@
   font-size: 1.2rem;
 }
 
-/* Vista de Mes */
+/* ===================== Vista de Mes ===================== */
+
 .calendar-view {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -153,6 +158,8 @@
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  position: relative;
+  z-index: 1;
 }
 
 .calendar-grid {
@@ -241,7 +248,8 @@
 .activity-dot.cultural { background: #17a2b8; }
 .activity-dot.voluntariado { background: #001f3f; }
 
-/* Vista de Semana */
+/* ===================== Vista de Semana ===================== */
+
 .week-view {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -251,6 +259,8 @@
   padding: 2rem;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   overflow-x: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .week-header {
@@ -290,7 +300,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
   padding: 1rem;
-  text-align: center;
+  text-align:中心;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -358,7 +368,8 @@
   opacity: 0.9;
 }
 
-/* Vista de Lista */
+/* ===================== Vista de Lista ===================== */
+
 .list-view {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -367,6 +378,8 @@
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  position: relative;
+  z-index: 1;
 }
 
 .activities-list {
@@ -380,7 +393,7 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -388,9 +401,9 @@
 }
 
 .activity-item:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: #ffffff;
   transform: translateX(5px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
 .activity-date {
@@ -460,7 +473,8 @@
   color: #ffffff;
 }
 
-.time, .location {
+.time,
+.location {
   font-size: 0.8rem;
   color: #6c757d;
   display: flex;
@@ -470,6 +484,10 @@
 
 .activity-status {
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
 }
 
 .status {
@@ -490,7 +508,142 @@
   color: #ffffff;
 }
 
-/* Responsive */
+/* ===================== Botones Editar / Eliminar ===================== */
+
+.activity-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-small {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.btn-edit {
+  border-color: #0ea5e9; /* azul turquesa */
+  color: #0369a1;
+  background: #e0f7ff;
+
+  &:hover {
+    background: #0ea5e9;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+}
+
+.btn-delete {
+  border-color: #dc2626;
+  color: #b91c1c;
+  background: #fef2f2;
+
+  &:hover {
+    background: #dc2626;
+    color: $blanco;
+    transform: translateY(-1px);
+  }
+}
+
+/* ===================== Modal de confirmación ===================== */
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.dialog {
+  position: relative;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 1.6rem 1.9rem 1.4rem;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: #f9fafb;
+}
+
+.dialog h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.55rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.dialog p {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  margin-bottom: 1.15rem;
+  line-height: 1.5;
+
+  strong {
+    color: #facc15;
+    font-weight: 600;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+/* botón cancelar dentro del modal */
+.dialog .btn-secondary {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  background: rgba(15, 23, 42, 0.7);
+  color: #f9fafb;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    background: rgba(31, 41, 55, 0.95);
+    border-color: rgba(209, 213, 219, 1);
+    transform: translateY(-1px);
+  }
+}
+
+/* botón eliminar dentro del modal */
+.btn-danger {
+  padding: 0.45rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid #f97373;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fef2f2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.55);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+    box-shadow: 0 10px 24px rgba(127, 29, 29, 0.65);
+    transform: translateY(-1px);
+  }
+}
+
+/* ===================== Responsive ===================== */
+
 @media (max-width: 768px) {
   .calendar-controls {
     flex-direction: column;
@@ -509,5 +662,9 @@
 
   .calendar-day {
     min-height: 80px;
+  }
+
+  .activity-status {
+    align-items: center;
   }
 }

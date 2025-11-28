@@ -1,0 +1,95 @@
+<app-header></app-header>
+
+<main class="profile">
+  <section class="profile-header">
+    <h2>Editar perfil</h2>
+    <p>Actualiza tu información y tu foto de perfil.</p>
+  </section>
+
+  <section class="profile-content">
+    <!-- Columna: datos del usuario -->
+    <div class="profile-form">
+      <h3>Información básica</h3>
+      <form (ngSubmit)="saveProfile()">
+        <div class="form-group">
+          <label for="displayName">Nombre</label>
+          <input
+            id="displayName"
+            name="displayName"
+            [(ngModel)]="profile.displayName"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="career">Carrera / Programa</label>
+          <input
+            id="career"
+            name="career"
+            [(ngModel)]="profile.career"
+            placeholder="Ing. en Desarrollo de Software, Psicología, etc."
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="bio">Acerca de ti</label>
+          <textarea
+            id="bio"
+            name="bio"
+            rows="4"
+            [(ngModel)]="profile.bio"
+            placeholder="Cuenta brevemente quién eres y cómo usas Agenda ITESO."
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="btn primary"
+          [disabled]="saving"
+        >
+          {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Columna: foto de perfil -->
+    <div class="profile-avatar">
+      <h3>Foto de perfil</h3>
+      <div class="avatar-preview">
+        <img
+          *ngIf="profile.avatarUrl; else noAvatar"
+          [src]="profile.avatarUrl"
+          alt="Foto de perfil"
+        />
+        <ng-template #noAvatar>
+          <div class="avatar-placeholder">
+            <span>Sin foto</span>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="avatar-actions">
+        <label class="file-input">
+          <span>Elegir imagen</span>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        </label>
+
+        <button
+          type="button"
+          class="btn secondary"
+          (click)="uploadAvatar()"
+          [disabled]="!selectedFile || uploadingAvatar"
+        >
+          {{ uploadingAvatar ? 'Subiendo...' : 'Subir foto' }}
+        </button>
+
+        <p class="hint">
+          Se recomienda usar imágenes cuadradas (por ejemplo 512x512) para que se vean mejor.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-toast></app-toast>
+<app-footer></app-footer>
