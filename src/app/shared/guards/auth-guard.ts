@@ -25,7 +25,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   return new Promise<boolean>((resolve) => {
-    const sub = auth.authState$.subscribe(user => {
+    let sub: any;
+    sub = auth.authState$.subscribe(user => {
       // Wait until auth state emits a value other than the initial null.
       if (user) {
         sub.unsubscribe();

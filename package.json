@@ -7,6 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --code-coverage --watch=false",
+    "e2e": "cypress open",
+    "e2e:headless": "cypress run",
     "serve:ssr:angular-proyecto-prueba": "node dist/angular-proyecto-prueba/server/server.mjs"
   },
   "prettier": {
@@ -53,6 +56,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^20.17.19",
     "@types/socket.io-client": "^1.4.36",
+    "cypress": "^13.17.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

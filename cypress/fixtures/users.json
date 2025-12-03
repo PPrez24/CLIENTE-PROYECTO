@@ -1,0 +1,7 @@
+{
+  "testUser": {
+    "emailPrefix": "prueba.cypress",
+    "email": "prueba.cypress@iteso.mx",
+    "password": "Prueba123"
+  }
+}
