@@ -29,6 +29,6 @@ describe('HighlightDirective', () => {
   it('should have background color', () => {
     const p = fixture.debugElement.query(By.css('p'));
     const el = p.nativeElement as HTMLElement;
-    expect(el.style.backgroundColor).toBe('rgb(18, 52, 86)'); // #123456 converted to rgb
+    expect(el.style.backgroundColor).toBe('rgb(18, 52, 86)');
   });
 });

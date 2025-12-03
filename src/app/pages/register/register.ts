@@ -37,7 +37,7 @@ export class Register implements OnInit {
       password: ['', [
         Validators.required,
         Validators.minLength(6),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d).+$/) // Al menos 1 mayúscula y 1 número
+        Validators.pattern(/^(?=.*[A-Z])(?=.*\d).+$/)
       ]],
       confirmPassword: ['', Validators.required]
     }, {
@@ -45,7 +45,6 @@ export class Register implements OnInit {
     });
   }
 
-  // Validador personalizado para verificar que las contraseñas coincidan
   private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
@@ -80,7 +79,6 @@ export class Register implements OnInit {
       try {
         localStorage.setItem(`welcome_pending_${user.uid}`, '1');
       } catch (e) {
-        // ignore storage errors
       }
       this.router.navigateByUrl('/app/dashboard');
     } catch (err: any) {
