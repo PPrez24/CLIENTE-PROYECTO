@@ -1,20 +1,39 @@
 <app-header></app-header>
 <main class="auth">
   <h2>Iniciar sesión</h2>
-  <form (ngSubmit)="login()" #f="ngForm">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
     <label>Email
       <div class="email-input-group">
-        <input type="text" name="emailPrefix" [(ngModel)]="emailPrefix" required pattern="^[A-Za-z0-9._%+-]+$" placeholder="tu.nombre" />
+        <input 
+          type="text" 
+          formControlName="emailPrefix" 
+          placeholder="tu.nombre"
+          [class.invalid]="emailPrefix?.invalid && emailPrefix?.touched"
+        />
         <span class="email-suffix">@iteso.mx</span>
       </div>
+      <small class="error-message" *ngIf="emailPrefix?.invalid && emailPrefix?.touched">
+        <span *ngIf="emailPrefix?.hasError('required')">El email es requerido</span>
+        <span *ngIf="emailPrefix?.hasError('pattern')">Formato de email inválido</span>
+      </small>
     </label>
     <label>Contraseña
       <div class="password-container">
-        <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" required />
-        <button type="button" (click)="togglePassword()" class="toggle-password">{{ showPassword ? '🙈' : '👁️' }}</button>
+        <input 
+          [type]="showPassword ? 'text' : 'password'" 
+          formControlName="password"
+          [class.invalid]="password?.invalid && password?.touched"
+        />
+        <button type="button" (click)="togglePassword()" class="toggle-password">
+          {{ showPassword ? '🙈' : '👁️' }}
+        </button>
       </div>
+      <small class="error-message" *ngIf="password?.invalid && password?.touched">
+        <span *ngIf="password?.hasError('required')">La contraseña es requerida</span>
+        <span *ngIf="password?.hasError('minlength')">Mínimo 6 caracteres</span>
+      </small>
     </label>
-    <button class="btn" type="submit" [disabled]="!f.form.valid || loading">
+    <button class="btn" type="submit" [disabled]="loginForm.invalid || loading">
       <span *ngIf="!loading">Entrar</span>
       <span *ngIf="loading" class="spinner"></span>
     </button>
