@@ -2,7 +2,6 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { Token } from './token';
-import { firebaseConfig } from '../config/firebase.config';
 import { getFirebaseAuth } from './firebase-client-init';
 
 @Injectable({ providedIn: 'root' })
