@@ -1,11 +1,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: process.env['FIREBASE_API_KEY'] || '',
-    authDomain: process.env['FIREBASE_AUTH_DOMAIN'] || '',
-    projectId: process.env['FIREBASE_PROJECT_ID'] || '',
-    storageBucket: process.env['FIREBASE_STORAGE_BUCKET'] || '',
-    messagingSenderId: process.env['FIREBASE_SENDER_ID'] || '',
-    appId: process.env['FIREBASE_APP_ID'] || ''
+    apiKey: "AIzaSyAU0JoHTKZWSU6l1Zy-WpkPUluEz52FFqM",
+    authDomain: "proyecto-cliente-9696a.firebaseapp.com",
+    projectId: "proyecto-cliente-9696a",
+    storageBucket: "proyecto-cliente-9696a.firebasestorage.app",
+    messagingSenderId: "340851957870",
+    appId: "1:340851957870:web:6a276dcbdc5214100a867f"
   }
 };
