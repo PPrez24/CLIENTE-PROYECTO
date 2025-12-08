@@ -17,6 +17,7 @@ import { Server as SocketIOServer } from 'socket.io';
 
 const browserDistFolder = path.join(import.meta.dirname, '../browser');
 const app = express();
+const ADMIN_EMAILS = ['admin@iteso.mx'];
 
 if (process.env['FIREBASE_SERVICE_ACCOUNT_JSON']) {
   try {
@@ -138,6 +139,36 @@ app.post(
       fileName: req.file.filename,
       fileUrl,
     });
+  }
+);
+
+app.post(
+  '/api/admin/delete-user',
+  verifyFirebaseToken,
+  async (req: Request, res: Response) => {
+    const requester = (req as any).user;
+    if (!requester || !requester.email) {
+      return res.status(401).json({ ok: false, message: 'No autenticado' });
+    }
+
+    const email = (requester.email as string).toLowerCase();
+    if (!ADMIN_EMAILS.includes(email)) {
+      return res.status(403).json({ ok: false, message: 'No tienes permisos de administrador' });
+    }
+
+    const { uid } = req.body as { uid?: string };
+    if (!uid) {
+      return res.status(400).json({ ok: false, message: 'uid requerido' });
+    }
+
+    try {
+      await admin.auth().deleteUser(uid);
+      console.log(`Usuario Firebase eliminado: ${uid}`);
+      return res.json({ ok: true });
+    } catch (err) {
+      console.error('Error al eliminar usuario en Firebase:', err);
+      return res.status(500).json({ ok: false, message: 'Error al eliminar usuario en Firebase' });
+    }
   }
 );
 

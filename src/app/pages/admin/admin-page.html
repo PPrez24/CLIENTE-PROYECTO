@@ -1,0 +1,131 @@
+<app-header></app-header>
+
+<main class="admin">
+  <section class="admin-header">
+    <h1>Panel de administración</h1>
+    <p>Gestiona usuarios locales y sus actividades guardadas en este navegador.</p>
+  </section>
+
+  <section class="admin-layout">
+    <div class="users-panel">
+      <h2>Usuarios detectados</h2>
+      <p *ngIf="users.length === 0">
+        No se encontraron perfiles ni actividades en este navegador.
+      </p>
+
+      <ul class="users-list" *ngIf="users.length > 0">
+        <li
+          *ngFor="let u of users"
+          (click)="selectUser(u)"
+          [class.selected]="selectedUser?.uid === u.uid"
+        >
+          <div class="user-main">
+            <strong>{{ u.profile?.displayName || '(sin nombre)' }}</strong>
+            <span class="uid">UID: {{ u.uid }}</span>
+          </div>
+          <div class="user-meta">
+            <span *ngIf="u.profile?.career">{{ u.profile?.career }}</span>
+            <span>{{ u.activities.length }} actividades</span>
+          </div>
+          <button
+            type="button"
+            class="btn-small btn-delete"
+            (click)="deleteUser(u); $event.stopPropagation()"
+          >
+            Eliminar usuario
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="activities-panel" *ngIf="selectedUser">
+      <h2>
+        Actividades de
+        <span>{{ selectedUser.profile?.displayName || selectedUser.uid }}</span>
+      </h2>
+
+      <p *ngIf="activitiesForSelected().length === 0">
+        Este usuario no tiene actividades registradas en este navegador.
+      </p>
+
+      <div class="activities-list" *ngIf="activitiesForSelected().length > 0">
+        <div class="activity-item" *ngFor="let a of activitiesForSelected()">
+          <div class="activity-main">
+            <h3>{{ a.title }}</h3>
+            <div class="activity-meta">
+              <span class="badge" [class]="a.type.toLowerCase()">
+                {{ a.type }}
+              </span>
+              <span>{{ a.date }} <ng-container *ngIf="a.time">· {{ a.time }}</ng-container></span>
+              <span *ngIf="a.location">📍 {{ a.location }}</span>
+              <span
+                class="status"
+                [class.pending]="a.status === 'pendiente'"
+                [class.completed]="a.status === 'completada'"
+              >
+                {{ a.status === 'pendiente' ? 'Pendiente' : 'Completada' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="activity-actions">
+            <button type="button" class="btn-small" (click)="startEdit(a)">
+              Editar
+            </button>
+            <button type="button" class="btn-small btn-delete" (click)="deleteActivity(a)">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="edit-panel" *ngIf="editingActivity">
+        <h3>Editar actividad</h3>
+        <form (ngSubmit)="saveActivity()">
+          <div class="form-row">
+            <label>Título
+              <input [(ngModel)]="editingActivity.title" name="title" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Tipo
+              <select [(ngModel)]="editingActivity.type" name="type">
+                <option>Académico</option>
+                <option>Deportivo</option>
+                <option>Cultural</option>
+                <option>Voluntariado</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Fecha
+              <input type="date" [(ngModel)]="editingActivity.date" name="date" required />
+            </label>
+            <label>Hora
+              <input type="time" [(ngModel)]="editingActivity.time" name="time" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Ubicación
+              <input [(ngModel)]="editingActivity.location" name="location" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Estatus
+              <select [(ngModel)]="editingActivity.status" name="status">
+                <option value="pendiente">Pendiente</option>
+                <option value="completada">Completada</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancelar</button>
+            <button type="submit" class="btn-primary">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-toast></app-toast>
+<app-footer></app-footer>

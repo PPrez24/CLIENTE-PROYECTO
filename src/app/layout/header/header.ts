@@ -5,6 +5,7 @@ import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/ro
 import { Token } from '../../shared/services/token';
 import { FirebaseAuthService } from '../../shared/services/firebase-auth';
 import { AuthVisibleDirective } from '../../shared/directives/auth-visible';
+import { RolesService } from '../../shared/services/roles.service';
 
 @Component({
   selector: 'app-header',
@@ -17,8 +18,10 @@ export class Header implements OnInit {
   private tokenSvc = inject(Token);
   private router = inject(Router);
   private firebaseAuth = inject(FirebaseAuthService);
+  private roles = inject(RolesService);
 
   currentUrl: string = '';
+  isAdmin$ = this.roles.isAdmin$;
 
   ngOnInit() {
     this.currentUrl = this.router.url;
@@ -42,13 +45,11 @@ export class Header implements OnInit {
   }
 
   logout() {
-    // Sign out via Firebase service which also clears server session cookie
     this.firebaseAuth.signOut()
       .then(() => {
         this.router.navigateByUrl('/auth/login');
       })
       .catch(() => {
-        // fallback to local token clear
         this.tokenSvc.clearToken();
         this.router.navigateByUrl('/auth/login');
       });
