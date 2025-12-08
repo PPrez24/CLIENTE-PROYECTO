@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID, Optional } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { FirebaseAuthService } from './firebase-auth';
 
 export type ActivityType = 'Académico'|'Deportivo'|'Cultural'|'Voluntariado';
 
@@ -6,35 +8,63 @@ export interface Activity {
   id: string;
   title: string;
   type: ActivityType;
-  date: string;    // ISO yyyy-mm-dd
-  time?: string;   // HH:mm
+  date: string;
+  time?: string;
   location?: string;
   status: 'pendiente' | 'completada';
 }
 
-const STORAGE_KEY = 'agenda_activities_v1';
+const STORAGE_KEY_BASE = 'agenda_activities_v1';
 
 @Injectable({ providedIn: 'root' })
 export class ActivitiesService {
   private activities: Activity[] = [];
+  private currentUserId: string | null = null;
 
-  constructor() {
-    this.loadFromStorage();
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Optional() private authSvc?: FirebaseAuthService
+  ) {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.activities = [];
+      return;
+    }
+
+    if (this.authSvc) {
+      const initialUser = this.authSvc.authState$.value;
+      this.currentUserId = initialUser?.uid || null;
+      this.loadFromStorage();
+
+      this.authSvc.authState$.subscribe(user => {
+        const newUid = user?.uid || null;
+        if (newUid !== this.currentUserId) {
+          this.currentUserId = newUid;
+          this.loadFromStorage();
+        }
+      });
+    } else {
+      this.currentUserId = null;
+      this.loadFromStorage();
+    }
+  }
+
+  private get storageKey(): string {
+    const suffix = this.currentUserId ?? 'guest';
+    return `${STORAGE_KEY_BASE}_${suffix}`;
   }
 
   private loadFromStorage() {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.activities = [];
+      return;
+    }
+
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(this.storageKey);
       if (raw) {
         this.activities = JSON.parse(raw);
       } else {
-        // Datos de ejemplo sólo la primera vez
-        this.activities = [
-          { id: 'a1', title: 'Proyecto de Web - Sprint 1', type: 'Académico', date: '2025-11-15', time: '10:00', location: 'Sala de Cómputo 101', status: 'pendiente' },
-          { id: 'a2', title: 'Entrenamiento fútbol', type: 'Deportivo', date: '2025-11-16', time: '18:00', location: 'Cancha Norte', status: 'pendiente' },
-          { id: 'a3', title: 'Voluntariado comedor', type: 'Voluntariado', date: '2025-11-20', time: '09:00', location: 'Comedor Central', status: 'completada' }
-        ];
-        this.saveToStorage();
+        this.activities = [];
       }
     } catch (e) {
       console.warn('No se pudo leer actividades de localStorage', e);
@@ -43,8 +73,10 @@ export class ActivitiesService {
   }
 
   private saveToStorage() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.activities));
+      localStorage.setItem(this.storageKey, JSON.stringify(this.activities));
     } catch (e) {
       console.warn('No se pudo guardar actividades en localStorage', e);
     }
@@ -58,10 +90,10 @@ export class ActivitiesService {
   }
 
   list(): Activity[] {
-    // devolvemos copia ordenada por fecha/hora
     return [...this.activities].sort(
-      (a, b) => new Date(a.date + 'T' + (a.time || '00:00')).getTime()
-              - new Date(b.date + 'T' + (b.time || '00:00')).getTime()
+      (a, b) =>
+        new Date(a.date + 'T' + (a.time || '00:00')).getTime() -
+        new Date(b.date + 'T' + (b.time || '00:00')).getTime()
     );
   }
 
