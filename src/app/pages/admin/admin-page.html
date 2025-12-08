@@ -30,13 +30,14 @@
           <button
             type="button"
             class="btn-small btn-delete"
-            (click)="deleteUser(u); $event.stopPropagation()"
+            (click)="askDeleteUser(u); $event.stopPropagation()"
           >
             Eliminar usuario
           </button>
         </li>
       </ul>
     </div>
+
     <div class="activities-panel" *ngIf="selectedUser">
       <h2>
         Actividades de
@@ -55,7 +56,10 @@
               <span class="badge" [class]="a.type.toLowerCase()">
                 {{ a.type }}
               </span>
-              <span>{{ a.date }} <ng-container *ngIf="a.time">· {{ a.time }}</ng-container></span>
+              <span>
+                {{ a.date }}
+                <ng-container *ngIf="a.time">· {{ a.time }}</ng-container>
+              </span>
               <span *ngIf="a.location">📍 {{ a.location }}</span>
               <span
                 class="status"
@@ -71,22 +75,30 @@
             <button type="button" class="btn-small" (click)="startEdit(a)">
               Editar
             </button>
-            <button type="button" class="btn-small btn-delete" (click)="deleteActivity(a)">
+            <button
+              type="button"
+              class="btn-small btn-delete"
+              (click)="askDeleteActivity(a)"
+            >
               Eliminar
             </button>
           </div>
         </div>
       </div>
+
       <div class="edit-panel" *ngIf="editingActivity">
         <h3>Editar actividad</h3>
         <form (ngSubmit)="saveActivity()">
           <div class="form-row">
-            <label>Título
+            <label>
+              Título
               <input [(ngModel)]="editingActivity.title" name="title" required />
             </label>
           </div>
+
           <div class="form-row">
-            <label>Tipo
+            <label>
+              Tipo
               <select [(ngModel)]="editingActivity.type" name="type">
                 <option>Académico</option>
                 <option>Deportivo</option>
@@ -95,21 +107,38 @@
               </select>
             </label>
           </div>
+
           <div class="form-row">
-            <label>Fecha
-              <input type="date" [(ngModel)]="editingActivity.date" name="date" required />
+            <label>
+              Fecha
+              <input
+                type="date"
+                [(ngModel)]="editingActivity.date"
+                name="date"
+                required
+              />
             </label>
-            <label>Hora
-              <input type="time" [(ngModel)]="editingActivity.time" name="time" />
+
+            <label>
+              Hora
+              <input
+                type="time"
+                [(ngModel)]="editingActivity.time"
+                name="time"
+              />
             </label>
           </div>
+
           <div class="form-row">
-            <label>Ubicación
+            <label>
+              Ubicación
               <input [(ngModel)]="editingActivity.location" name="location" />
             </label>
           </div>
+
           <div class="form-row">
-            <label>Estatus
+            <label>
+              Estatus
               <select [(ngModel)]="editingActivity.status" name="status">
                 <option value="pendiente">Pendiente</option>
                 <option value="completada">Completada</option>
@@ -118,14 +147,86 @@
           </div>
 
           <div class="actions">
-            <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancelar</button>
-            <button type="submit" class="btn-primary">Guardar cambios</button>
+            <button
+              type="button"
+              class="btn-secondary"
+              (click)="cancelEdit()"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              Guardar cambios
+            </button>
           </div>
         </form>
       </div>
     </div>
   </section>
 </main>
+
+<div
+  class="dialog-overlay"
+  *ngIf="showDeleteUserDialog"
+  (click)="cancelDeleteUser()"
+>
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <h3>Eliminar usuario</h3>
+    <p>
+      ¿Estás seguro de que deseas eliminar al usuario
+      <strong>{{ userToDelete?.profile?.displayName || userToDelete?.uid }}</strong>
+      y todas sus actividades locales?<br />
+      También se intentará eliminar su cuenta en Firebase. Esta acción no se puede
+      deshacer.
+    </p>
+    <div class="dialog-actions">
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="cancelDeleteUser()"
+      >
+        Cancelar
+      </button>
+      <button
+        class="btn-danger"
+        type="button"
+        (click)="confirmDeleteUser()"
+      >
+        Eliminar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="dialog-overlay"
+  *ngIf="showDeleteActivityDialog"
+  (click)="cancelDeleteActivity()"
+>
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <h3>Confirmar eliminación</h3>
+    <p>
+      ¿Estás seguro de que deseas eliminar la actividad
+      <strong>{{ activityToDelete?.title }}</strong>?<br />
+      Esta acción no se puede deshacer.
+    </p>
+    <div class="dialog-actions">
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="cancelDeleteActivity()"
+      >
+        Cancelar
+      </button>
+      <button
+        class="btn-danger"
+        type="button"
+        (click)="confirmDeleteActivity()"
+      >
+        Eliminar
+      </button>
+    </div>
+  </div>
+</div>
 
 <app-toast></app-toast>
 <app-footer></app-footer>

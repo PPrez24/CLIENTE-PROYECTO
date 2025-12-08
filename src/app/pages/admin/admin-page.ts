@@ -21,6 +21,12 @@ export class AdminPage implements OnInit {
   selectedUser: AdminUserInfo | null = null;
   editingActivity: Activity | null = null;
 
+  showDeleteUserDialog = false;
+  userToDelete: AdminUserInfo | null = null;
+
+  showDeleteActivityDialog = false;
+  activityToDelete: Activity | null = null;
+
   constructor(
     private adminData: AdminLocalDataService,
     private toast: ToastService,
@@ -44,30 +50,48 @@ export class AdminPage implements OnInit {
     this.editingActivity = null;
   }
 
-  async deleteUser(u: AdminUserInfo) {
-    const confirmDelete = window.confirm(
-        `¿Eliminar al usuario "${u.profile?.displayName || u.uid}" y todas sus actividades locales, y borrar su cuenta de Firebase?`
-    );
-    if (!confirmDelete) return;
+  askDeleteUser(u: AdminUserInfo) {
+    this.userToDelete = u;
+    this.showDeleteUserDialog = true;
+  }
+
+
+  cancelDeleteUser() {
+    this.showDeleteUserDialog = false;
+    this.userToDelete = null;
+  }
+
+  async confirmDeleteUser() {
+    if (!this.userToDelete) return;
+
+    const u = this.userToDelete;
+
     this.adminData.deleteUser(u.uid);
+
     try {
-        const resp = await this.adminApi.deleteUserInFirebase(u.uid);
-        if (resp.ok) {
-        this.toast.show('Usuario eliminado por completo (datos locales + cuenta Firebase).', 'success');
-        } else {
+      const resp = await this.adminApi.deleteUserInFirebase(u.uid);
+      if (resp.ok) {
+        this.toast.show(
+          'Usuario eliminado por completo (datos locales + cuenta Firebase).',
+          'success'
+        );
+      } else {
         this.toast.show(resp.message || 'Error al eliminar cuenta en Firebase', 'error');
-        }
+      }
     } catch (err: any) {
-        console.error('deleteUser error', err);
-        const msg =
-            err?.error?.message ||
-            (typeof err?.message === 'string' ? err.message : '') ||
-            'Error al llamar al backend para eliminar la cuenta.';
-        this.toast.show(msg, 'error');
-        }
+      console.error('deleteUser error', err);
+      const msg =
+        err?.error?.message ||
+        (typeof err?.message === 'string' ? err.message : '') ||
+        'Error al llamar al backend para eliminar la cuenta.';
+      this.toast.show(msg, 'error');
+    }
 
     this.selectedUser = null;
     this.reload();
+
+    this.showDeleteUserDialog = false;
+    this.userToDelete = null;
   }
 
   startEdit(a: Activity) {
@@ -86,14 +110,25 @@ export class AdminPage implements OnInit {
     this.reload();
   }
 
-  deleteActivity(a: Activity) {
-    if (!this.selectedUser) return;
-    const ok = window.confirm(`¿Eliminar la actividad "${a.title}"?`);
-    if (!ok) return;
+  askDeleteActivity(a: Activity) {
+    this.activityToDelete = a;
+    this.showDeleteActivityDialog = true;
+  }
 
-    this.adminData.deleteActivity(this.selectedUser.uid, a.id);
+  cancelDeleteActivity() {
+    this.showDeleteActivityDialog = false;
+    this.activityToDelete = null;
+  }
+
+  confirmDeleteActivity() {
+    if (!this.selectedUser || !this.activityToDelete) return;
+
+    this.adminData.deleteActivity(this.selectedUser.uid, this.activityToDelete.id);
     this.toast.show('Actividad eliminada (localmente).', 'success');
     this.reload();
+
+    this.showDeleteActivityDialog = false;
+    this.activityToDelete = null;
   }
 
   activitiesForSelected(): Activity[] {
