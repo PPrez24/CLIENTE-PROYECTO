@@ -11,6 +11,8 @@ import { NotFound } from './pages/not-found/not-found';
 import { authGuard } from './shared/guards/auth-guard';
 import { guestGuard } from './shared/guards/guest-guard';
 import { EditProfilePage } from './pages/profile/edit-profile';
+import { AdminPage } from './pages/admin/admin-page';
+import { adminGuard } from './shared/guards/admin-guard';
 
 export const routes: Routes = [
   // públicas
@@ -25,6 +27,13 @@ export const routes: Routes = [
   { path: 'app/activities/:id/edit', component: ActivityForm, canActivate: [authGuard] },
   { path: 'app/templates', component: TemplatesList, canActivate: [authGuard] },
   { path: 'app/profile', component: EditProfilePage, canActivate: [authGuard] },
+
+  // admin
+  {
+    path: 'app/admin',
+    component: AdminPage,
+    canActivate: [authGuard, adminGuard]
+  },
 
   // 404
   { path: '**', component: NotFound }

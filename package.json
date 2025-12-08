@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "dev": "ng serve",
     "start": "node dist/angular-proyecto-prueba/server/server.mjs",
     "build": "ng build",
     "build:ssr": "ng build",
