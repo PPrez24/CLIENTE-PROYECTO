@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 import { Header } from '../../layout/header/header';
 import { Footer } from '../../layout/footer/footer';
 import { ActivitiesService, Activity } from '../../shared/services/activities';
@@ -13,9 +14,10 @@ import { ToastComponent } from '../ui/toast/toast';
   standalone: true,
   imports: [CommonModule, RouterModule, Header, Footer, ToastComponent],
   templateUrl: './activities-list.html',
-  styleUrl: './activities-list.scss'
+  styleUrls: ['./activities-list.scss']
 })
-export class ActivitiesList implements OnInit {
+export class ActivitiesList implements OnInit, OnDestroy {
+  private subs = new Subscription();
   items: Activity[] = [];
 
   currentView: 'month' | 'week' | 'list' = 'month';
@@ -39,6 +41,20 @@ export class ActivitiesList implements OnInit {
   ngOnInit() {
     this.reload();
     this.currentWeekStart = this.getStartOfWeek(new Date());
+
+    // Reload when navigation happens (e.g. after returning from form)
+    this.subs.add(
+      this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => this.reload())
+    );
+
+    // Listen to socket events if available to refresh in real-time
+    this.subs.add(this.socket.on('activity:created').subscribe(() => this.reload()));
+    this.subs.add(this.socket.on('activity:updated').subscribe(() => this.reload()));
+    this.subs.add(this.socket.on('activity:deleted').subscribe(() => this.reload()));
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
   private reload() {
